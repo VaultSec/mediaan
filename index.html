@@ -164,9 +164,16 @@
       const median = numbers[medianIndex];
 
       // Find the number furthest from the median
-      const furthest = numbers.reduce((a, b) => {
-        return Math.abs(a - median) > Math.abs(b - median) ? a : b;
-      });
+      let furthest = numbers[0];
+      let maxDistance = Math.abs(furthest - median);
+
+      for (let i = 1; i < numbers.length; i++) {
+        const distance = Math.abs(numbers[i] - median);
+        if (distance > maxDistance) {
+          maxDistance = distance;
+          furthest = numbers[i];
+        }
+      }
 
       // Display the result
       document.getElementById('result').innerText = `The number furthest from the median is: ${furthest}`;
