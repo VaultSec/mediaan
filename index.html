@@ -5,153 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Median Distance Calculator</title>
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        body {
-            background: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .input-display {
-            width: 100%;
-            padding: 20px;
-            font-size: 24px;
-            border: 2px solid #007bff;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            background: white;
-            text-align: left;
-        }
-
-        .numpad {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 20px;
-            font-size: 24px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .num-btn {
-            background: white;
-        }
-
-        .control-btn {
-            background: #e9ecef;
-        }
-
-        .space-btn {
-            grid-column: span 2;
-            background: #007bff;
-            color: white;
-        }
-
-        .result {
-            font-size: 24px;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            display: none;
-        }
+        * { box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f0f0; margin: 0; padding: 20px; }
+        .container { max-width: 400px; margin: 0 auto; }
+        #inputField { width: 100%; padding: 15px; font-size: 20px; margin-bottom: 10px; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        button { padding: 20px; font-size: 18px; border: none; border-radius: 8px; background: #fff; }
+        .space-btn { grid-column: span 2; background: #007bff; color: white; }
+        #result { margin-top: 20px; padding: 15px; background: white; border-radius: 8px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <input type="text" class="input-display" id="inputField" placeholder="Enter numbers with spaces" readonly>
-        
+        <input type="text" id="inputField" placeholder="Enter numbers" readonly>
         <div class="numpad">
-            <button class="num-btn" onclick="addToInput('7')">7</button>
-            <button class="num-btn" onclick="addToInput('8')">8</button>
-            <button class="num-btn" onclick="addToInput('9')">9</button>
-            <button class="control-btn" onclick="clearInput()">C</button>
-            <button class="num-btn" onclick="addToInput('4')">4</button>
-            <button class="num-btn" onclick="addToInput('5')">5</button>
-            <button class="num-btn" onclick="addToInput('6')">6</button>
-            <button class="control-btn" onclick="delLast()">⌫</button>
-            <button class="num-btn" onclick="addToInput('1')">1</button>
-            <button class="num-btn" onclick="addToInput('2')">2</button>
-            <button class="num-btn" onclick="addToInput('3')">3</button>
-            <button class="num-btn" onclick="addToInput('0')">0</button>
-            <button class="space-btn" onclick="addSpace()">SPACE</button>
+            <button onclick="addNum(7)">7</button>
+            <button onclick="addNum(8)">8</button>
+            <button onclick="addNum(9)">9</button>
+            <button onclick="addNum(4)">4</button>
+            <button onclick="addNum(5)">5</button>
+            <button onclick="addNum(6)">6</button>
+            <button onclick="addNum(1)">1</button>
+            <button onclick="addNum(2)">2</button>
+            <button onclick="addNum(3)">3</button>
+            <button onclick="addSpace()" class="space-btn">SPACE</button>
+            <button onclick="addNum(0)">0</button>
+            <button onclick="clearInput()">C</button>
         </div>
-
-        <button class="control-btn" style="width: 100%;" onclick="calculate()">Find Furthest</button>
-
-        <div class="result" id="result"></div>
+        <div id="result"></div>
     </div>
 
     <script>
-        function addToInput(num) {
-            const field = document.getElementById('inputField');
-            field.value = field.value + num;
+        function addNum(n) { 
+            document.getElementById('inputField').value += n;
         }
-
-        function addSpace() {
-            const field = document.getElementById('inputField');
-            field.value = field.value + ' ';
+        function addSpace() { 
+            document.getElementById('inputField').value += ' '; 
         }
-
-        function clearInput() {
-            document.getElementById('inputField').value = '';
-            document.getElementById('result').style.display = 'none';
-        }
-
-        function delLast() {
-            const field = document.getElementById('inputField');
-            field.value = field.value.slice(0, -1);
+        function clearInput() { 
+            document.getElementById('inputField').value = ''; 
+            document.getElementById('result').innerHTML = '';
         }
 
         function calculate() {
-            const input = document.getElementById('inputField').value.trim();
-            const numbers = input.split(' ').filter(n => n !== '').map(Number);
+            const numbers = document.getElementById('inputField').value
+                .trim().split(' ')
+                .filter(n => n !== '')
+                .map(Number);
             
-            if (numbers.length < 1 || numbers.some(isNaN)) {
-                alert('Invalid input');
-                return;
-            }
-
+            if (numbers.length < 1) return;
+            
             const sorted = [...numbers].sort((a, b) => a - b);
             const mid = Math.floor(sorted.length / 2);
             const median = sorted.length % 2 === 0 
                 ? (sorted[mid - 1] + sorted[mid]) / 2 
                 : sorted[mid];
-
-            let maxDistance = -Infinity;
-            let furthestNumbers = [];
-
+            
+            let maxDist = -Infinity;
+            let result = [];
+            
             numbers.forEach(num => {
-                const distance = Math.abs(num - median);
-                if (distance > maxDistance) {
-                    maxDistance = distance;
-                    furthestNumbers = [num];
-                } else if (distance === maxDistance) {
-                    if (!furthestNumbers.includes(num)) {
-                        furthestNumbers.push(num);
-                    }
+                const dist = Math.abs(num - median);
+                if (dist > maxDist) {
+                    maxDist = dist;
+                    result = [num];
+                } else if (dist === maxDist) {
+                    result.push(num);
                 }
             });
-
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `Furthest number${furthestNumbers.length > 1 ? 's' : ''}: ${furthestNumbers.join(', ')}`;
+            
+            document.getElementById('result').innerHTML = 
+                Array.from(new Set(result)).join(', ');
         }
+
+        // Add event listeners for real-time calculation
+        document.getElementById('inputField').addEventListener('input', calculate);
     </script>
 </body>
 </html>
