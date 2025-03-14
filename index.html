@@ -159,9 +159,17 @@
       // Sort numbers and find the median (middle value in sorted list)
       numbers.sort((a, b) => a - b);
 
-      // Find the median based on the sorted array
-      const medianIndex = Math.floor(numbers.length / 2);
-      const median = numbers[medianIndex];
+      // Calculate the median
+      let median;
+      const middle = Math.floor(numbers.length / 2);
+
+      if (numbers.length % 2 === 0) {
+        // For even number of elements, the median is the average of the two middle numbers
+        median = (numbers[middle - 1] + numbers[middle]) / 2;
+      } else {
+        // For odd number of elements, the median is the middle number
+        median = numbers[middle];
+      }
 
       // Find the number furthest from the median
       let furthest = numbers[0];
