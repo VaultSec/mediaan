@@ -41,11 +41,6 @@
             transition: border-color 0.3s;
         }
 
-        #inputField:focus {
-            outline: none;
-            border-color: #6200ee;
-        }
-
         .numpad {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -61,32 +56,14 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        .btn:hover {
-            background: #e0e0e0;
-        }
-
-        .btn.primary {
-            background: #6200ee;
-            color: white;
-        }
-
-        .btn.primary:hover {
-            background: #3700b3;
-        }
-
-        .btn.danger {
-            background: #b00020;
-            color: white;
-        }
-
-        .btn.danger:hover {
-            background: #8a001a;
-        }
+        .btn:hover { background: #e0e0e0; }
+        .primary { background: #6200ee; color: white; }
+        .primary:hover { background: #3700b3; }
+        .danger { background: #b00020; color: white; }
+        .danger:hover { background: #8a001a; }
+        .space-btn { grid-column: span 2; }
 
         #result {
             font-size: 20px;
@@ -95,8 +72,6 @@
             border-radius: 8px;
             color: #2e7d32;
             text-align: center;
-            margin-top: 20px;
-            display: none;
         }
     </style>
 </head>
@@ -109,15 +84,18 @@
             <button class="btn" onclick="addNum(8)">8</button>
             <button class="btn" onclick="addNum(9)">9</button>
             <button class="btn danger" onclick="clearInput()">C</button>
+
             <button class="btn" onclick="addNum(4)">4</button>
             <button class="btn" onclick="addNum(5)">5</button>
             <button class="btn" onclick="addNum(6)">6</button>
-            <button class="btn" onclick="addSpace()">␣</button>
+            <button class="btn primary" onclick="calculate()">GO</button>
+
             <button class="btn" onclick="addNum(1)">1</button>
             <button class="btn" onclick="addNum(2)">2</button>
             <button class="btn" onclick="addNum(3)">3</button>
-            <button class="btn primary" onclick="calculate()">GO</button>
+            
             <button class="btn" onclick="addNum(0)">0</button>
+            <button class="btn space-btn" onclick="addSpace()">SPACE</button>
             <button class="btn" onclick="delLast()">⌫</button>
         </div>
 
@@ -126,19 +104,17 @@
 
     <script>
         function addNum(n) {
-            const field = document.getElementById('inputField');
-            field.value += n;
+            document.getElementById('inputField').value += n;
             calculate();
         }
 
         function addSpace() {
-            const field = document.getElementById('inputField');
-            field.value += ' ';
+            document.getElementById('inputField').value += ' ';
         }
 
         function clearInput() {
             document.getElementById('inputField').value = '';
-            document.getElementById('result').style.display = 'none';
+            document.getElementById('result').textContent = '';
         }
 
         function delLast() {
@@ -148,12 +124,13 @@
         }
 
         function calculate() {
-            const input = document.getElementById('inputField').value.trim();
-            const numbers = input.split(' ').filter(n => n !== '').map(Number);
-            const resultDiv = document.getElementById('result');
+            const numbers = document.getElementById('inputField').value
+                .trim().split(' ')
+                .filter(n => n !== '')
+                .map(Number);
             
-            if (numbers.length < 1) {
-                resultDiv.style.display = 'none';
+            if (numbers.length === 0) {
+                document.getElementById('result').textContent = '';
                 return;
             }
 
@@ -164,21 +141,20 @@
                 : sorted[mid];
 
             let maxDist = -Infinity;
-            let result = [];
+            let furthest = [];
             
             numbers.forEach(num => {
                 const dist = Math.abs(num - median);
                 if (dist > maxDist) {
                     maxDist = dist;
-                    result = [num];
+                    furthest = [num];
                 } else if (dist === maxDist) {
-                    result.push(num);
+                    furthest.push(num);
                 }
             });
 
-            const uniqueResults = [...new Set(result)];
-            resultDiv.textContent = uniqueResults.join(', ');
-            resultDiv.style.display = 'block';
+            document.getElementById('result').textContent = 
+                [...new Set(furthest)].join(', ');
         }
     </script>
 </body>
