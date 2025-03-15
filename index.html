@@ -39,6 +39,10 @@
             margin-bottom: 24px;
             text-align: right;
             transition: border-color 0.3s;
+            height: 60px;
+            line-height: 60px; /* Vertically center the text */
+            white-space: nowrap; /* Prevent text from wrapping */
+            overflow: hidden; /* Prevent scrolling */
         }
 
         .numpad {
@@ -89,6 +93,7 @@
         <input type="text" id="inputField" placeholder="Tap numbers" readonly>
         
         <div class="numpad">
+            <!-- Number pad arrangement for fast typing -->
             <button class="btn" onclick="addNum(7)">7</button>
             <button class="btn" onclick="addNum(8)">8</button>
             <button class="btn" onclick="addNum(9)">9</button>
@@ -102,44 +107,55 @@
             <button class="btn" onclick="addNum(3)">3</button>
 
             <button class="btn" onclick="addNum(0)">0</button>
-            <!-- "C" button placed in the same row as the "0" button -->
-            <button class="btn space-btn danger" onclick="clearInput()">C</button>
+            <!-- "Space" button placed in the same row as the "0" button -->
+            <button class="btn space-btn" onclick="addSpace()">Space</button>
+            <!-- "C" button to clear input -->
+            <button class="btn danger" onclick="clearInput()">C</button>
         </div>
 
         <div id="result"></div>
     </div>
 
     <script>
-        let typingTimer;
-        const typingDelay = 500; // 0.5 second delay for space detection
-
+        // Function to handle number addition
         function addNum(n) {
             const inputField = document.getElementById('inputField');
+            // Append the number to the input field
             inputField.value += n;
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(addSpace, typingDelay);
             calculate();
         }
 
+        // Function to handle space addition
         function addSpace() {
             const inputField = document.getElementById('inputField');
             // Only add space if there's no space already
             if (inputField.value && inputField.value[inputField.value.length - 1] !== ' ') {
                 inputField.value += ' ';
             }
+            calculate();
         }
 
+        // Function to clear the input field
         function clearInput() {
             document.getElementById('inputField').value = '';
             document.getElementById('result').textContent = '';
         }
 
+        // Function to calculate the median and furthest numbers
         function calculate() {
-            const numbers = document.getElementById('inputField').value
-                .trim().split(' ')
-                .filter(n => n !== '')
-                .map(Number);
-            
+            const inputField = document.getElementById('inputField');
+            const inputValue = inputField.value.trim();
+
+            // Only proceed if there's at least one digit entered
+            if (inputValue.length === 0) {
+                document.getElementById('result').textContent = '';
+                return;
+            }
+
+            // Split the string into an array of numbers
+            const numbers = inputValue.split(' ').map(Number);
+
+            // Proceed with the calculation only if there are valid numbers
             if (numbers.length === 0) {
                 document.getElementById('result').textContent = '';
                 return;
