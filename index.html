@@ -71,6 +71,16 @@
             border-radius: 8px;
             color: #2e7d32;
             text-align: center;
+            height: 60px; /* Fixed height for the result box */
+            line-height: 60px; /* Vertically center the text */
+            overflow: hidden; /* Prevent scrolling */
+            white-space: nowrap; /* Prevent text from wrapping */
+            text-overflow: ellipsis; /* Add ellipsis if text overflows */
+        }
+
+        /* The "C" button placed on the same row as the "0" button */
+        .space-btn {
+            grid-column: span 2; /* Makes the "C" button span 2 columns in the last row */
         }
     </style>
 </head>
@@ -92,8 +102,8 @@
             <button class="btn" onclick="addNum(3)">3</button>
 
             <button class="btn" onclick="addNum(0)">0</button>
-            <button class="btn danger" onclick="clearInput()">C</button>
-            <button class="btn primary" onclick="calculate()">GO</button>
+            <!-- "C" button placed in the same row as the "0" button -->
+            <button class="btn space-btn danger" onclick="clearInput()">C</button>
         </div>
 
         <div id="result"></div>
