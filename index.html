@@ -43,7 +43,7 @@
 
         .numpad {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin-bottom: 20px;
         }
@@ -52,7 +52,7 @@
             background: #f5f5f5;
             border: none;
             padding: 20px;
-            font-size: 18px;
+            font-size: 24px; /* Increased font size for better visibility */
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
@@ -63,7 +63,6 @@
         .primary:hover { background: #3700b3; }
         .danger { background: #b00020; color: white; }
         .danger:hover { background: #8a001a; }
-        .space-btn { grid-column: span 2; }
 
         #result {
             font-size: 20px;
@@ -83,20 +82,18 @@
             <button class="btn" onclick="addNum(7)">7</button>
             <button class="btn" onclick="addNum(8)">8</button>
             <button class="btn" onclick="addNum(9)">9</button>
-            <button class="btn danger" onclick="clearInput()">C</button>
 
             <button class="btn" onclick="addNum(4)">4</button>
             <button class="btn" onclick="addNum(5)">5</button>
             <button class="btn" onclick="addNum(6)">6</button>
-            <button class="btn primary" onclick="calculate()">GO</button>
 
             <button class="btn" onclick="addNum(1)">1</button>
             <button class="btn" onclick="addNum(2)">2</button>
             <button class="btn" onclick="addNum(3)">3</button>
-            
+
             <button class="btn" onclick="addNum(0)">0</button>
-            <button class="btn space-btn" onclick="addSpace()">SPACE</button>
-            <button class="btn" onclick="delLast()">⌫</button>
+            <button class="btn danger" onclick="clearInput()">C</button>
+            <button class="btn primary" onclick="calculate()">GO</button>
         </div>
 
         <div id="result"></div>
@@ -125,12 +122,6 @@
         function clearInput() {
             document.getElementById('inputField').value = '';
             document.getElementById('result').textContent = '';
-        }
-
-        function delLast() {
-            const field = document.getElementById('inputField');
-            field.value = field.value.slice(0, -1);
-            calculate();
         }
 
         function calculate() {
